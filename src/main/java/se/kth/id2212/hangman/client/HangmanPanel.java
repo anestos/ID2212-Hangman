@@ -5,20 +5,33 @@
  */
 package se.kth.id2212.hangman.client;
 
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JLabel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  *
  * @author Anestos
  */
 public class HangmanPanel extends javax.swing.JPanel {
+    
+    private static final Logger logger = LoggerFactory.getLogger(HangmanClient.class);
+
     private final MainPanel mainPanel;
+    private final HangmanClient hangmanClient;
 
     /**
      * Creates new form HangmanPanel
+     * @param client
      * @param mainPanel
      */
-    public HangmanPanel(MainPanel mainPanel) {
+    public HangmanPanel(HangmanClient client, MainPanel mainPanel) {
         initComponents();
         this.mainPanel = mainPanel;
+        this.hangmanClient = client;
+        setLabelListeners();
     }
 
     /**
@@ -33,7 +46,7 @@ public class HangmanPanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         wordLabel = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        lettersFirstRow = new javax.swing.JPanel();
         labelA = new javax.swing.JLabel();
         labelB = new javax.swing.JLabel();
         labelC = new javax.swing.JLabel();
@@ -47,7 +60,7 @@ public class HangmanPanel extends javax.swing.JPanel {
         labelK = new javax.swing.JLabel();
         labelL = new javax.swing.JLabel();
         labelM = new javax.swing.JLabel();
-        jPanel5 = new javax.swing.JPanel();
+        lettersSecondRow = new javax.swing.JPanel();
         labelN = new javax.swing.JLabel();
         labelQ = new javax.swing.JLabel();
         labelP = new javax.swing.JLabel();
@@ -92,197 +105,223 @@ public class HangmanPanel extends javax.swing.JPanel {
         jPanel4.setPreferredSize(new java.awt.Dimension(400, 70));
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanel2.setMinimumSize(new java.awt.Dimension(400, 28));
+        lettersFirstRow.setMinimumSize(new java.awt.Dimension(400, 28));
 
         labelA.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelA.setText("A");
         labelA.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelA.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelA.setOpaque(true);
         labelA.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelA);
+        lettersFirstRow.add(labelA);
 
         labelB.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelB.setText("B");
         labelB.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelB.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelB.setOpaque(true);
         labelB.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelB);
+        lettersFirstRow.add(labelB);
 
         labelC.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelC.setText("C");
         labelC.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelC.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelC.setOpaque(true);
         labelC.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelC);
+        lettersFirstRow.add(labelC);
 
         labelD.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelD.setText("D");
         labelD.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelD.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelD.setOpaque(true);
         labelD.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelD);
+        lettersFirstRow.add(labelD);
 
         labelE.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelE.setText("E");
         labelE.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelE.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelE.setOpaque(true);
         labelE.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelE);
+        lettersFirstRow.add(labelE);
 
         labelF.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelF.setText("F");
         labelF.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelF.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelF.setOpaque(true);
         labelF.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelF);
+        lettersFirstRow.add(labelF);
 
         labelG.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelG.setText("G");
         labelG.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelG.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelG.setOpaque(true);
         labelG.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelG);
+        lettersFirstRow.add(labelG);
 
         labelH.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelH.setText("H");
         labelH.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelH.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelH.setOpaque(true);
         labelH.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelH);
+        lettersFirstRow.add(labelH);
 
         labelI.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelI.setText("I");
         labelI.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelI.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelI.setOpaque(true);
         labelI.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelI);
+        lettersFirstRow.add(labelI);
 
         labelJ.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelJ.setText("J");
         labelJ.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelJ.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelJ.setOpaque(true);
         labelJ.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelJ);
+        lettersFirstRow.add(labelJ);
 
         labelK.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelK.setText("K");
         labelK.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelK.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelK.setOpaque(true);
         labelK.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelK);
+        lettersFirstRow.add(labelK);
 
         labelL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelL.setText("L");
         labelL.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelL.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelL.setOpaque(true);
         labelL.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelL);
+        lettersFirstRow.add(labelL);
 
         labelM.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelM.setText("M");
         labelM.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelM.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelM.setOpaque(true);
         labelM.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel2.add(labelM);
+        lettersFirstRow.add(labelM);
 
-        jPanel4.add(jPanel2);
+        jPanel4.add(lettersFirstRow);
 
-        jPanel5.setMaximumSize(null);
-        jPanel5.setMinimumSize(new java.awt.Dimension(400, 28));
-        jPanel5.setPreferredSize(new java.awt.Dimension(400, 28));
+        lettersSecondRow.setMaximumSize(null);
+        lettersSecondRow.setMinimumSize(new java.awt.Dimension(400, 28));
+        lettersSecondRow.setPreferredSize(new java.awt.Dimension(400, 28));
 
         labelN.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelN.setText("N");
         labelN.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelN.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelN.setOpaque(true);
         labelN.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelN);
+        lettersSecondRow.add(labelN);
 
         labelQ.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelQ.setText("Q");
         labelQ.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelQ.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelQ.setOpaque(true);
         labelQ.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelQ);
+        lettersSecondRow.add(labelQ);
 
         labelP.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelP.setText("P");
         labelP.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelP.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelP.setOpaque(true);
         labelP.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelP);
+        lettersSecondRow.add(labelP);
 
         labelU.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelU.setText("U");
         labelU.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelU.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelU.setOpaque(true);
         labelU.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelU);
+        lettersSecondRow.add(labelU);
 
         labelR.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelR.setText("R");
         labelR.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelR.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelR.setOpaque(true);
         labelR.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelR);
+        lettersSecondRow.add(labelR);
 
         labelT.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelT.setText("T");
         labelT.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelT.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelT.setOpaque(true);
         labelT.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelT);
+        lettersSecondRow.add(labelT);
 
         labelZ.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelZ.setText("Z");
         labelZ.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelZ.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelZ.setOpaque(true);
         labelZ.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelZ);
+        lettersSecondRow.add(labelZ);
 
         labelY.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelY.setText("Y");
         labelY.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelY.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelY.setOpaque(true);
         labelY.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelY);
+        lettersSecondRow.add(labelY);
 
         labelV.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelV.setText("V");
         labelV.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelV.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelV.setOpaque(true);
         labelV.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelV);
+        lettersSecondRow.add(labelV);
 
         labelS.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelS.setText("S");
         labelS.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelS.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelS.setOpaque(true);
         labelS.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelS);
+        lettersSecondRow.add(labelS);
 
         labelO.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelO.setText("O");
         labelO.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelO.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelO.setOpaque(true);
         labelO.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelO);
+        lettersSecondRow.add(labelO);
 
         labelW.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelW.setText("W");
         labelW.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelW.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelW.setOpaque(true);
         labelW.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelW);
+        lettersSecondRow.add(labelW);
 
         labelX.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelX.setText("X");
         labelX.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         labelX.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelX.setOpaque(true);
         labelX.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel5.add(labelX);
+        lettersSecondRow.add(labelX);
 
-        jPanel4.add(jPanel5);
+        jPanel4.add(lettersSecondRow);
 
         jTextField1.setPreferredSize(new java.awt.Dimension(200, 20));
         jPanel3.add(jTextField1);
@@ -324,9 +363,10 @@ public class HangmanPanel extends javax.swing.JPanel {
                 .addGap(96, 96, 96))
         );
     }// </editor-fold>//GEN-END:initComponents
-
+     
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         // TODO add your handling code here:
+        mainPanel.disconnect();
         System.exit(0);
     }//GEN-LAST:event_exitButtonActionPerformed
 
@@ -335,10 +375,8 @@ public class HangmanPanel extends javax.swing.JPanel {
     private javax.swing.JButton exitButton;
     private javax.swing.JButton guessButton;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelA;
@@ -367,7 +405,40 @@ public class HangmanPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelX;
     private javax.swing.JLabel labelY;
     private javax.swing.JLabel labelZ;
+    private javax.swing.JPanel lettersFirstRow;
+    private javax.swing.JPanel lettersSecondRow;
     private javax.swing.JButton newGameButton;
     private javax.swing.JLabel wordLabel;
     // End of variables declaration//GEN-END:variables
+    private void letterLabelClicked(java.awt.event.MouseEvent evt) {                                           
+        // TODO add your handling code here:
+        JLabel lbl = (JLabel)evt.getComponent();
+                    lbl.setCursor(null);
+                    logger.info("Selected letter: " + lbl.getText());
+                    hangmanClient.letterSelected(lbl.getText());
+                    lbl.removeMouseListener(lbl.getMouseListeners()[0]);
+    }  
+    
+    private void setLabelListeners(){
+        for (Component c : lettersFirstRow.getComponents()) {
+            if (c instanceof JLabel) { 
+                ((JLabel)c).addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        letterLabelClicked(e);
+                    }
+                });
+            }
+        }
+        for (Component c : lettersSecondRow.getComponents()) {
+            if (c instanceof JLabel) { 
+                ((JLabel)c).addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        letterLabelClicked(e);
+                    }
+                });
+            }
+        }
+    }
 }

@@ -9,13 +9,15 @@ package se.kth.id2212.hangman.client;
  *
  * @author Anestos
  */
-public interface InfoMessage {
-    String NOT_CONNECTED = "Server unavailable, try again later";
-    String CONNECTING = "Trying to connect, please wait";
-    String UNKNOWN_HOST = "Don't know about host: ";
-    String NO_IO_CONNECTION = "Couldn't get I/O for the connection to: ";
-    String GAME_STARTED = "Game started! Good luck";
-    String NUMBER_OF_LIFES = "Lifes remaining: ";
-    String GAME_WON = "Congratulations, you won the game!!";
-    String GAME_LOST = "Game lost, but you can try again!";
+public class InfoMessage {
+    public static final String NOT_CONNECTED = "Server unavailable";
+    public static final String CONNECTING = "Trying to connect, please wait";
+    public static final String UNKNOWN_HOST = "Cannot find host: ";
+    public static final String NO_IO_CONNECTION = "Cannot connect to: ";
+    public static final String DISCONNECTED_FROM = "Disconnected from: ";
+    public static final String GAME_STARTED = "Game started! Good luck";
+    public static final String NUMBER_OF_LIFES = "Lifes remaining: ";
+    public static final String GAME_WON = "Congratulations, you won the game!!";
+    public static final String GAME_LOST = "Game lost, but you can try again!";
+    public static final String NOT_VALID_PORT = "The port you chose is not valid";
 }

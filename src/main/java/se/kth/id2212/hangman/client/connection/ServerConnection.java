@@ -1,5 +1,4 @@
-
-package se.kth.id2212.hangman.client;
+package se.kth.id2212.hangman.client.connection;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -9,31 +8,36 @@ import java.net.UnknownHostException;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.kth.id2212.hangman.client.HangmanClient;
+import se.kth.id2212.hangman.client.InfoMessage;
+import se.kth.id2212.hangman.client.MainPanel;
+
 /**
  * Handles all communication with the Hangman server.
  */
 public class ServerConnection implements Runnable {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(HangmanClient.class);
-    
+
     private final String host;
-    private final int port;
+    private final Integer port;
     private final HangmanClient gui;
-    private final LinkedBlockingQueue<String> strings =
-            new LinkedBlockingQueue<>();
+    private final LinkedBlockingQueue<String> strings
+            = new LinkedBlockingQueue<>();
     private BufferedInputStream in;
     private BufferedOutputStream out;
     private final MainPanel mainPanel;
+    private Socket clientSocket;
 
     /**
      * Creates a new instance. Does not connect to the server.
      *
-     * @param gui  The client gui object.
+     * @param gui The client gui object.
      * @param host The reverse server host name.
      * @param port The reverse server port number.
      * @param mainPanel
      */
-    public ServerConnection(HangmanClient gui, String host, int port, MainPanel mainPanel) {
+    public ServerConnection(String host, Integer port, HangmanClient gui, MainPanel mainPanel) {
         this.host = host;
         this.port = port;
         this.gui = gui;
@@ -41,38 +45,66 @@ public class ServerConnection implements Runnable {
     }
 
     /**
-     * The run method of the communication thread. First connects to
-     * the server using the host name and port number specified in the
-     * constructor. Second waits to receive a string from the gui and sends
-     * that to the reverse server. This is done once, then the thread dies.
+     * The run method of the communication thread. First connects to the server
+     * using the host name and port number specified in the constructor. Second
+     * waits to receive a string from the gui and sends that to the reverse
+     * server. This is done once, then the thread dies.
      */
     @Override
-    public void run()
-    {
+    public void run() {
         connect();
-        callServer();
     }
 
     /**
-     * Connects to the server using the host name and port number
-     * specified in the constructor.
+     * Connects to the server using the host name and port number specified in
+     * the constructor.
      */
     void connect() {
         mainPanel.changeInfoLabel(InfoMessage.CONNECTING);
         try {
-            Socket clientSocket = new Socket(host, port);
+            clientSocket = new Socket(host, port);
             in = new BufferedInputStream(clientSocket.getInputStream());
             out = new BufferedOutputStream(clientSocket.getOutputStream());
-            gui.connected();
+            gui.connected(); 
+            
         } catch (UnknownHostException e) {
             mainPanel.changeInfoLabel(InfoMessage.UNKNOWN_HOST + host);
             logger.info(InfoMessage.UNKNOWN_HOST + host);
-            gui.notConnected();
+            gui.notConnected(InfoMessage.UNKNOWN_HOST + host);
         } catch (IOException e) {
             mainPanel.changeInfoLabel(InfoMessage.NO_IO_CONNECTION + host);
             logger.info(InfoMessage.NO_IO_CONNECTION + host);
-            gui.notConnected();
+            gui.notConnected(InfoMessage.NO_IO_CONNECTION + host);
         }
+    }
+
+    public void disconnect() {
+        try {
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+            if (clientSocket != null) {
+                clientSocket.close();
+            }
+        } catch (IOException ex) {
+            mainPanel.changeInfoLabel(InfoMessage.DISCONNECTED_FROM + host);
+            logger.info(InfoMessage.DISCONNECTED_FROM + host);
+        }
+    }
+
+    public Socket getSocket() {
+        return clientSocket;
+    }
+
+    public BufferedInputStream getInput() {
+        return in;
+    }
+
+    public BufferedOutputStream getOutput() {
+        return out;
     }
 
     /**
@@ -80,15 +112,8 @@ public class ServerConnection implements Runnable {
      *
      * @param text The string to reverse.
      */
-    void reverse(String text) {
+    public void sendToServer(String text) {
         strings.add(text);
-    }
-
-    /**
-     * Waits to receive a string from the gui and sends that to the
-     * reverse server.
-     */
-    void callServer() {
         String result;
         try {
             byte[] toServer = strings.take().getBytes();
@@ -106,4 +131,9 @@ public class ServerConnection implements Runnable {
         }
         gui.showResult(result);
     }
+
+    /**
+     * Waits to receive a string from the gui and sends that to the reverse
+     * server.
+     */
 }

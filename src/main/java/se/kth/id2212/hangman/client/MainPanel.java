@@ -15,20 +15,23 @@ public class MainPanel extends javax.swing.JPanel {
     Component connectPanel;
     Component hangmanPanel;
     Component informationPanel;
+    HangmanClient hangmanClient;
     /**
      * Creates new form MainPanel
      * @param clientInstance
      */
     public MainPanel(HangmanClient clientInstance) {
         initComponents();
+        this.hangmanClient = clientInstance;
 
         connectPanel = add(new ConnectionPanel(clientInstance, this));
         this.add(connectPanel);
-        hangmanPanel = add(new HangmanPanel(this));
+        hangmanPanel = add(new HangmanPanel(clientInstance, this));
         hangmanPanel.setVisible(false);
         this.add(hangmanPanel);
         informationPanel = add(new InformationPanel());
         this.add(informationPanel);
+        
     }
     
     public void showGameGui(){
@@ -41,12 +44,11 @@ public class MainPanel extends javax.swing.JPanel {
         ((InformationPanel)informationPanel).setLabelText(text);
     }
     
-    public void notConnected(){
+    public void notConnected(String reason){
         ((ConnectionPanel)connectPanel).notConnected();
-        changeInfoLabel(InfoMessage.NOT_CONNECTED);
-        
+        changeInfoLabel(InfoMessage.NOT_CONNECTED+". " +reason);
     }
-    
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -64,4 +66,12 @@ public class MainPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
+    void initFocus() {
+        ((ConnectionPanel)connectPanel).initFocus();
+    }
+
+    void disconnect() {
+        hangmanClient.disconnect();
+    }
 }

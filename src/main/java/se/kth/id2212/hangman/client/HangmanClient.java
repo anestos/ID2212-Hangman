@@ -2,6 +2,7 @@ package se.kth.id2212.hangman.client;
 
 
 
+import se.kth.id2212.hangman.client.connection.ServerConnection;
 import javax.swing.*;
 import java.awt.*;
 import org.slf4j.Logger;
@@ -13,9 +14,6 @@ public class HangmanClient extends JPanel {
     
     private static final Logger logger = LoggerFactory.getLogger(HangmanClient.class);
 
-    private JButton connectButton;
-    private JButton reverseButton;
-    private JLabel resultLabel = new JLabel();
     private ServerConnection connection;
     private MainPanel mainPanel;
     /**
@@ -32,8 +30,10 @@ public class HangmanClient extends JPanel {
      */
     public static void main(String[] args) {
         JFrame frame = new JFrame("Hangman Client");
-        frame.setContentPane(new HangmanClient());
+        HangmanClient client = new HangmanClient();
+        frame.setContentPane(client);
         frame.pack();
+        client.initFocus();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
@@ -42,23 +42,25 @@ public class HangmanClient extends JPanel {
         setLayout(new FlowLayout());
         mainPanel = new MainPanel(this);
         add(mainPanel);
-        add(resultLabel);
     }
-
+    
+    public void letterSelected(String letter){
+        connection.sendToServer(letter);
+    }
     /**
      * Callback method for the network layer. Should be invoked when
      * successfully connected to the server.
      */
-    void connected() {
+    public void connected() {
         SwingUtilities.invokeLater(() -> {
             logger.info("Connected to server");
             mainPanel.showGameGui();
         });
     }
     
-    void notConnected(){
+    public void notConnected(String reason){
         SwingUtilities.invokeLater(() -> {
-            mainPanel.notConnected();
+            mainPanel.notConnected(reason);
         });
     }
 
@@ -69,9 +71,23 @@ public class HangmanClient extends JPanel {
      * @param result The result of the reversal attempt. Should contain
      *               either the reversed string or an error message.
      */
-    void showResult(final String result) {
+    public void showResult(final String result) {
         SwingUtilities.invokeLater(() -> {
-            logger.info(result);
+            logger.info("server reply: "+result);
         });
+    }
+
+    public void initFocus() {
+        mainPanel.initFocus();
+    }
+    
+    public void connect(String host, int port){
+        connection =
+                    new ServerConnection(host, port, this, mainPanel);
+            new Thread(connection).start();
+    }
+
+    void disconnect() {
+        connection.disconnect();
     }
 }

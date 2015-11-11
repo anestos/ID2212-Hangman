@@ -5,12 +5,14 @@
  */
 package se.kth.id2212.hangman.client;
 
+import se.kth.id2212.hangman.client.connection.ServerConnection;
+import javax.swing.JTextField;
+
 /**
  *
  * @author Anestos
  */
 public class ConnectionPanel extends javax.swing.JPanel {
-    private ServerConnection connection;
     private final HangmanClient hangmanClient;
     private final MainPanel mainPanel;
     /**
@@ -24,10 +26,13 @@ public class ConnectionPanel extends javax.swing.JPanel {
         initComponents();
     }
     
+    public void initFocus(){
+        connectButton.requestFocusInWindow();
+    }
+    
     public void notConnected(){
         connectButton.setEnabled(true);
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -51,14 +56,14 @@ public class ConnectionPanel extends javax.swing.JPanel {
         jPanel1.setPreferredSize(new java.awt.Dimension(380, 100));
 
         hostLabel.setText("Host:");
-        hostLabel.setPreferredSize(new java.awt.Dimension(30, 14));
+        hostLabel.setPreferredSize(new java.awt.Dimension(50, 14));
         jPanel1.add(hostLabel);
 
         hostField.setText("localhost");
         hostField.setPreferredSize(new java.awt.Dimension(100, 20));
-        hostField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                hostFieldActionPerformed(evt);
+        hostField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                hostFieldFocusGained(evt);
             }
         });
         jPanel1.add(hostField);
@@ -66,14 +71,14 @@ public class ConnectionPanel extends javax.swing.JPanel {
         jPanel2.setPreferredSize(new java.awt.Dimension(380, 100));
 
         portLabel.setText("Port:");
-        portLabel.setPreferredSize(new java.awt.Dimension(30, 14));
+        portLabel.setPreferredSize(new java.awt.Dimension(50, 14));
         jPanel2.add(portLabel);
 
         portField.setText("4444");
         portField.setPreferredSize(new java.awt.Dimension(100, 20));
-        portField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                portFieldActionPerformed(evt);
+        portField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                portFieldFocusGained(evt);
             }
         });
         jPanel2.add(portField);
@@ -124,26 +129,27 @@ public class ConnectionPanel extends javax.swing.JPanel {
     private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectButtonActionPerformed
         // TODO add your handling code here:
         String host = hostField.getText();
-            int port = Integer.parseInt(portField.getText());
-            connectButton.setEnabled(false);
-            connection =
-                    new ServerConnection(hangmanClient, host, port, mainPanel);
-            new Thread(connection).start();
+            try {
+                int port = Integer.parseInt(portField.getText());
+                connectButton.setEnabled(false);
+                hangmanClient.connect(host,port);
+            } catch (NumberFormatException e){
+                mainPanel.changeInfoLabel(InfoMessage.NOT_VALID_PORT);
+            }
     }//GEN-LAST:event_connectButtonActionPerformed
-
-    private void portFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_portFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_portFieldActionPerformed
-
-    private void hostFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hostFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_hostFieldActionPerformed
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_exitButtonActionPerformed
 
+    private void hostFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_hostFieldFocusGained
+        ((JTextField)evt.getComponent()).setText("");
+    }//GEN-LAST:event_hostFieldFocusGained
+
+    private void portFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_portFieldFocusGained
+               ((JTextField)evt.getComponent()).setText("");
+    }//GEN-LAST:event_portFieldFocusGained
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton connectButton;
