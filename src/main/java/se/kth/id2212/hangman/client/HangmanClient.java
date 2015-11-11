@@ -44,8 +44,9 @@ public class HangmanClient extends JPanel {
         add(mainPanel);
     }
     
-    public void letterSelected(String letter){
-        connection.sendToServer(letter);
+    public void takeAGuess(String text){
+        Request req = new Request(text);
+        connection.sendToServer(req.getJson().toJSONString());
     }
     /**
      * Callback method for the network layer. Should be invoked when

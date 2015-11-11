@@ -5,12 +5,14 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.kth.id2212.hangman.client.HangmanClient;
 import se.kth.id2212.hangman.client.InfoMessage;
 import se.kth.id2212.hangman.client.MainPanel;
+import se.kth.id2212.hangman.client.Request;
 
 /**
  * Handles all communication with the Hangman server.
@@ -66,7 +68,9 @@ public class ServerConnection implements Runnable {
             in = new BufferedInputStream(clientSocket.getInputStream());
             out = new BufferedOutputStream(clientSocket.getOutputStream());
             gui.connected(); 
-            
+            Request req = new Request();
+            sendToServer(req.getJson().toJSONString());
+            logger.info("Sending new game request");
         } catch (UnknownHostException e) {
             mainPanel.changeInfoLabel(InfoMessage.UNKNOWN_HOST + host);
             logger.info(InfoMessage.UNKNOWN_HOST + host);
@@ -119,17 +123,33 @@ public class ServerConnection implements Runnable {
             byte[] toServer = strings.take().getBytes();
             out.write(toServer, 0, toServer.length);
             out.flush();
-            byte[] fromServer = new byte[toServer.length];
-            int n = in.read(fromServer, 0, fromServer.length);
-            if (n != fromServer.length) {
-                result = "Failed to reverse, some data was lost.";
-            } else {
-                result = new String(fromServer);
-            }
+            byte[] msg = new byte[4096];
+                int bytesRead = 0;
+                int n;
+                while ((n = in.read(msg, bytesRead, 256)) != -1) {
+                    logger.info("Received msg!");
+                    bytesRead += n;
+                    if (bytesRead == 4096) {
+                        break;
+                    }
+                    if (in.available() == 0) {
+                        break;
+                    }
+                }
+            String input = new String(Arrays.copyOfRange(msg, 0, bytesRead));
+            logger.info("Reply: "+input);
+            
+//            byte[] fromServer = new byte[toServer.length];
+//            int n = in.read(fromServer, 0, fromServer.length);
+//            if (n != fromServer.length) {
+//                result = "Failed to reverse, some data was lost.";
+//            } else {
+//                result = new String(fromServer);
+//            }
         } catch (InterruptedException | IOException e) {
             result = "Failed to reverse, " + e.getMessage();
         }
-        gui.showResult(result);
+//        gui.showResult(result);
     }
 
     /**

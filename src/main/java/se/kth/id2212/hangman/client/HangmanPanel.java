@@ -11,12 +11,13 @@ import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author Anestos
  */
 public class HangmanPanel extends javax.swing.JPanel {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(HangmanClient.class);
 
     private final MainPanel mainPanel;
@@ -24,6 +25,7 @@ public class HangmanPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form HangmanPanel
+     *
      * @param client
      * @param mainPanel
      */
@@ -327,6 +329,11 @@ public class HangmanPanel extends javax.swing.JPanel {
         jPanel3.add(jTextField1);
 
         guessButton.setText("Guess");
+        guessButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                guessButtonActionPerformed(evt);
+            }
+        });
         jPanel3.add(guessButton);
 
         newGameButton.setText("New Game");
@@ -363,12 +370,18 @@ public class HangmanPanel extends javax.swing.JPanel {
                 .addGap(96, 96, 96))
         );
     }// </editor-fold>//GEN-END:initComponents
-     
+
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         // TODO add your handling code here:
         mainPanel.disconnect();
         System.exit(0);
     }//GEN-LAST:event_exitButtonActionPerformed
+
+    private void guessButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guessButtonActionPerformed
+
+        logger.info("Selected letter: " + jTextField1.getText());
+        hangmanClient.takeAGuess(jTextField1.getText());
+    }//GEN-LAST:event_guessButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -410,19 +423,19 @@ public class HangmanPanel extends javax.swing.JPanel {
     private javax.swing.JButton newGameButton;
     private javax.swing.JLabel wordLabel;
     // End of variables declaration//GEN-END:variables
-    private void letterLabelClicked(java.awt.event.MouseEvent evt) {                                           
+    private void letterLabelClicked(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
-        JLabel lbl = (JLabel)evt.getComponent();
-                    lbl.setCursor(null);
-                    logger.info("Selected letter: " + lbl.getText());
-                    hangmanClient.letterSelected(lbl.getText());
-                    lbl.removeMouseListener(lbl.getMouseListeners()[0]);
-    }  
-    
-    private void setLabelListeners(){
+        JLabel lbl = (JLabel) evt.getComponent();
+        lbl.setCursor(null);
+        logger.info("Selected letter: " + lbl.getText());
+        hangmanClient.takeAGuess(lbl.getText());
+        lbl.removeMouseListener(lbl.getMouseListeners()[0]);
+    }
+
+    private void setLabelListeners() {
         for (Component c : lettersFirstRow.getComponents()) {
-            if (c instanceof JLabel) { 
-                ((JLabel)c).addMouseListener(new MouseAdapter() {
+            if (c instanceof JLabel) {
+                ((JLabel) c).addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         letterLabelClicked(e);
@@ -431,8 +444,8 @@ public class HangmanPanel extends javax.swing.JPanel {
             }
         }
         for (Component c : lettersSecondRow.getComponents()) {
-            if (c instanceof JLabel) { 
-                ((JLabel)c).addMouseListener(new MouseAdapter() {
+            if (c instanceof JLabel) {
+                ((JLabel) c).addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         letterLabelClicked(e);

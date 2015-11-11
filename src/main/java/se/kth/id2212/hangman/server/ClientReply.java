@@ -33,24 +33,25 @@ public class ClientReply {
             json.put("status", CommunicationStatus.GAME_LOST);
             json.put("word", req.getWord());
             json.put("tries", 0);
+            req.setTries(0);
 
         } else {
 
             if (CommunicationStatus.GUESSING.equals(req.getStatus())) {
                 // guessing
-                logger.info(req.getGuess());
                 if (req.getGuess() != null && !req.getGuess().equals("")) {
-                    //guessing a word
+                     logger.info("Guessing a word " +req.getGuess());
                     if (req.isGuessCorrect() && req.hasTries()) {
                         json.put("status", CommunicationStatus.GAME_WON);
                         json.put("word", req.getWord());
                     } else {
                         json.put("status", CommunicationStatus.WRONG_GUESS);
                         json.put("word", maskWord());
+                        req.setTries(req.getTries()-1);
                     }
 
                 } else if (req.getLetter() != null && !req.getLetter().equals("")) {
-                    //guessing a letter
+                    logger.info("Guessing a letter " +req.getLetter());
                     List<Integer> positions = req.getPositions();
                     if (positions.size() > 0) {
                         json.put("status", CommunicationStatus.CORRECT_LETTER);
@@ -61,6 +62,7 @@ public class ClientReply {
                     } else {
                         json.put("status", CommunicationStatus.WRONG_LETTER);
                         json.put("word", maskWord());
+                        req.setTries(req.getTries()-1);
                     }
                 } else {
                     json.put("status", CommunicationStatus.UNKNOWN);
@@ -70,8 +72,10 @@ public class ClientReply {
             } else if (CommunicationStatus.END_GAME.equals(req.getStatus())) {
                 // ending game
             } else if (CommunicationStatus.NEW_GAME.equals(req.getStatus())) {
-                // new game
+                json.put("word", maskWord());
+                json.put("status", CommunicationStatus.UNKNOWN); 
             }
+            json.put("tries", req.getTries());
         }
     }
 
@@ -80,10 +84,12 @@ public class ClientReply {
     }
 
     public String maskWord() {
-        String listString = "[^";
-        listString = pastTries.stream().map((s) -> s).reduce(listString, String::concat);
-        listString += "]";
-
+        String listString = ".";
+        if (pastTries.size() !=0 ){
+            listString = "[^";
+            listString = pastTries.stream().map((s) -> s).reduce(listString, String::concat);
+            listString += "]";
+        }
         return req.getWord().replaceAll("(?i)" + listString, "*");
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
 import org.json.simple.JSONObject;
 
 /**
- *
+ *{"status":"guessing","guess":"","letter":"l"}
  * @author Nikos
  */
 public class ClientRequest {
@@ -18,7 +18,7 @@ public class ClientRequest {
     private final String letter;
     private final String word;
     private final String guess;
-    private final Integer myTries;
+    private Integer myTries;
     
     ClientRequest(JSONObject json, String word, Integer myTries) {
         this.status = (String) json.get("status");
@@ -67,5 +67,9 @@ public class ClientRequest {
     
     public boolean isLetterGuess(){
         return letter != null;
+    }
+
+    void setTries(int i) {
+        myTries = i;
     }
 }

@@ -67,18 +67,20 @@ public class ConnectionHandler implements Runnable {
                 }
                 
 //              Thread.sleep(DELAY_TO_MILLISECS);
-                myTries--;
                 String input = new String(Arrays.copyOfRange(msg, 0, bytesRead));
+                logger.info("received"+input);
                 ServerParser parser = new ServerParser(input);
                 ClientRequest req = new ClientRequest(parser.getJson(), word, myTries);
                 if (req.isLetterGuess()){
                     pastTries.add(req.getLetter());
                 }
-                ClientReply resp = new ClientReply(req, pastTries);
                 
+                ClientReply resp = new ClientReply(req, pastTries);
+                myTries = req.getTries();
                 
                 logger.info("input: "+ parser.getJson().toJSONString());
                 out.write(resp.getJson().toJSONString().getBytes());
+                logger.info("output: "+ resp.getJson().toJSONString());
                 out.flush();
                 if (msg[0]==13){
                     close();
