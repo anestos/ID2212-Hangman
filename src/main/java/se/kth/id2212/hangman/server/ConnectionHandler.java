@@ -1,5 +1,6 @@
 package se.kth.id2212.hangman.server;
 
+import se.kth.id2212.hangman.helpers.HangmanJsonParser;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.net.Socket;
@@ -17,7 +18,7 @@ public class ConnectionHandler implements Runnable {
     
     private static final Logger logger = LoggerFactory.getLogger(HangmanServer.class);
 
-    private static final int DELAY_TO_MILLISECS = 10;
+    private static final int DELAY_TO_MILLISECS = 3000;
     private final Socket clientSocket;
     private Boolean threadAlive = true;
     private final String word;
@@ -66,10 +67,10 @@ public class ConnectionHandler implements Runnable {
                     }
                 }
                 
-//              Thread.sleep(DELAY_TO_MILLISECS);
+                Thread.sleep(DELAY_TO_MILLISECS);
                 String input = new String(Arrays.copyOfRange(msg, 0, bytesRead));
                 logger.info("received"+input);
-                ServerParser parser = new ServerParser(input);
+                HangmanJsonParser parser = new HangmanJsonParser(input);
                 ClientRequest req = new ClientRequest(parser.getJson(), word, myTries);
                 if (req.isLetterGuess()){
                     pastTries.add(req.getLetter());

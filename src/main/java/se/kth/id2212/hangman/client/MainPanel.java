@@ -5,6 +5,7 @@
  */
 package se.kth.id2212.hangman.client;
 
+import java.awt.Color;
 import java.awt.Component;
 
 /**
@@ -37,11 +38,15 @@ public class MainPanel extends javax.swing.JPanel {
     public void showGameGui(){
         connectPanel.setVisible(false);
         hangmanPanel.setVisible(true);
-        changeInfoLabel(InfoMessage.GAME_STARTED);
+        changeInfoLabel(InfoMessage.CONNECTING);
     }
     
     public void changeInfoLabel(String text){
         ((InformationPanel)informationPanel).setLabelText(text);
+    }
+    
+    public void changeWordHint(String text) {
+        ((HangmanPanel)hangmanPanel).setLabelText(text);
     }
     
     public void notConnected(String reason){
@@ -73,5 +78,17 @@ public class MainPanel extends javax.swing.JPanel {
 
     void disconnect() {
         hangmanClient.disconnect();
+    }
+
+    void setLetterBG(String string, Color color) {
+        ((HangmanPanel)hangmanPanel).setLetterBG(string, color);
+    }
+
+    void disableGuessButton() {
+        ((HangmanPanel)hangmanPanel).disableGuessButton();
+    }
+
+    void removeLetterListeners() {
+        ((HangmanPanel)hangmanPanel).removeLetterListeners();
     }
 }

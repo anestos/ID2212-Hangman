@@ -127,7 +127,6 @@ public class ServerConnection implements Runnable {
                 int bytesRead = 0;
                 int n;
                 while ((n = in.read(msg, bytesRead, 256)) != -1) {
-                    logger.info("Received msg!");
                     bytesRead += n;
                     if (bytesRead == 4096) {
                         break;
@@ -137,8 +136,7 @@ public class ServerConnection implements Runnable {
                     }
                 }
             String input = new String(Arrays.copyOfRange(msg, 0, bytesRead));
-            logger.info("Reply: "+input);
-            
+            result = input;
 //            byte[] fromServer = new byte[toServer.length];
 //            int n = in.read(fromServer, 0, fromServer.length);
 //            if (n != fromServer.length) {
@@ -147,9 +145,10 @@ public class ServerConnection implements Runnable {
 //                result = new String(fromServer);
 //            }
         } catch (InterruptedException | IOException e) {
-            result = "Failed to reverse, " + e.getMessage();
+            result = InfoMessage.FAILED_TO_SEND_MSG + e.getMessage();
+            logger.info(result);
         }
-//        gui.showResult(result);
+        gui.showResult(result);
     }
 
     /**

@@ -5,10 +5,12 @@
  */
 package se.kth.id2212.hangman.client;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +79,7 @@ public class HangmanPanel extends javax.swing.JPanel {
         labelW = new javax.swing.JLabel();
         labelX = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
+        wordGuessTextField = new javax.swing.JTextField();
         guessButton = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         newGameButton = new javax.swing.JButton();
@@ -86,7 +88,6 @@ public class HangmanPanel extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(400, 300));
 
         wordLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        wordLabel.setText("Guess the word: _ _ _ _ _");
         wordLabel.setToolTipText("");
         wordLabel.setPreferredSize(new java.awt.Dimension(400, 50));
 
@@ -325,8 +326,13 @@ public class HangmanPanel extends javax.swing.JPanel {
 
         jPanel4.add(lettersSecondRow);
 
-        jTextField1.setPreferredSize(new java.awt.Dimension(200, 20));
-        jPanel3.add(jTextField1);
+        wordGuessTextField.setPreferredSize(new java.awt.Dimension(200, 20));
+        wordGuessTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                wordGuessTextFieldFocusGained(evt);
+            }
+        });
+        jPanel3.add(wordGuessTextField);
 
         guessButton.setText("Guess");
         guessButton.addActionListener(new java.awt.event.ActionListener() {
@@ -379,9 +385,14 @@ public class HangmanPanel extends javax.swing.JPanel {
 
     private void guessButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guessButtonActionPerformed
 
-        logger.info("Selected letter: " + jTextField1.getText());
-        hangmanClient.takeAGuess(jTextField1.getText());
+        logger.info("Guessing word: " + wordGuessTextField.getText());
+        hangmanClient.takeAGuess(wordGuessTextField.getText());
     }//GEN-LAST:event_guessButtonActionPerformed
+
+    private void wordGuessTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_wordGuessTextFieldFocusGained
+        ((JTextField) evt.getComponent()).setText("");
+
+    }//GEN-LAST:event_wordGuessTextFieldFocusGained
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -391,7 +402,6 @@ public class HangmanPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelA;
     private javax.swing.JLabel labelB;
     private javax.swing.JLabel labelC;
@@ -421,6 +431,7 @@ public class HangmanPanel extends javax.swing.JPanel {
     private javax.swing.JPanel lettersFirstRow;
     private javax.swing.JPanel lettersSecondRow;
     private javax.swing.JButton newGameButton;
+    private javax.swing.JTextField wordGuessTextField;
     private javax.swing.JLabel wordLabel;
     // End of variables declaration//GEN-END:variables
     private void letterLabelClicked(java.awt.event.MouseEvent evt) {
@@ -451,6 +462,44 @@ public class HangmanPanel extends javax.swing.JPanel {
                         letterLabelClicked(e);
                     }
                 });
+            }
+        }
+    }
+
+    public void setLabelText(String text) {
+        wordLabel.setText(text);
+    }
+
+    public void setLetterBG(String string, Color color) {
+        for (Component c : lettersFirstRow.getComponents()) {
+            if (c instanceof JLabel) {
+                if (((JLabel) c).getText().equals(string)) {
+                    ((JLabel) c).setBackground(color);
+                }
+            }
+        }
+        for (Component c : lettersSecondRow.getComponents()) {
+            if (c instanceof JLabel) {
+                if (((JLabel) c).getText().equals(string)) {
+                    ((JLabel) c).setBackground(color);
+                }
+            }
+        }
+    }
+
+    public void disableGuessButton() {
+        guessButton.setEnabled(false);
+    }
+
+    public void removeLetterListeners() {
+        for (Component c : lettersFirstRow.getComponents()) {
+            if (c instanceof JLabel) {
+//                ((JLabel) c).removeMouseListener();
+            }
+        }
+        for (Component c : lettersSecondRow.getComponents()) {
+            if (c instanceof JLabel) {
+//                ((JLabel) c).addMouseListener();
             }
         }
     }

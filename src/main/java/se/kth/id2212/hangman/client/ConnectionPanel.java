@@ -5,7 +5,6 @@
  */
 package se.kth.id2212.hangman.client;
 
-import se.kth.id2212.hangman.client.connection.ServerConnection;
 import javax.swing.JTextField;
 
 /**

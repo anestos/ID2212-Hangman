@@ -56,12 +56,14 @@ public class ClientReply {
                     if (positions.size() > 0) {
                         json.put("status", CommunicationStatus.CORRECT_LETTER);
                         json.put("word", maskWord());
+                        json.put("letter", req.getLetter());
                         // check if got all letters
                         //if (got all letters)
 
                     } else {
                         json.put("status", CommunicationStatus.WRONG_LETTER);
                         json.put("word", maskWord());
+                        json.put("letter", req.getLetter());
                         req.setTries(req.getTries()-1);
                     }
                 } else {
@@ -73,7 +75,7 @@ public class ClientReply {
                 // ending game
             } else if (CommunicationStatus.NEW_GAME.equals(req.getStatus())) {
                 json.put("word", maskWord());
-                json.put("status", CommunicationStatus.UNKNOWN); 
+                json.put("status", CommunicationStatus.NEW_GAME); 
             }
             json.put("tries", req.getTries());
         }
@@ -83,14 +85,14 @@ public class ClientReply {
         return json;
     }
 
-    public String maskWord() {
+    private String maskWord() {
         String listString = ".";
-        if (pastTries.size() !=0 ){
+        if (!pastTries.isEmpty()){
             listString = "[^";
             listString = pastTries.stream().map((s) -> s).reduce(listString, String::concat);
             listString += "]";
         }
-        return req.getWord().replaceAll("(?i)" + listString, "*");
+        return req.getWord().replaceAll("(?i)" + listString, "_");
     }
 
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.id2212.hangman.server;
+package se.kth.id2212.hangman.helpers;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,12 +14,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author Nikos
  */
-public class ServerParser {
+public class HangmanJsonParser {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HangmanServer.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HangmanJsonParser.class);
 
     private JSONObject json;
-    public ServerParser(String input){
+    public HangmanJsonParser(String input){
         JSONParser parser = new JSONParser();
         Object obj;
         try {
