@@ -25,10 +25,10 @@ public class MainPanel extends javax.swing.JPanel {
         initComponents();
         this.hangmanClient = clientInstance;
 
-        connectPanel = add(new ConnectionPanel(clientInstance, this));
+        this.connectPanel = add(new ConnectionPanel(clientInstance, this));
         this.add(connectPanel);
-        hangmanPanel = add(new HangmanPanel(clientInstance, this));
-        hangmanPanel.setVisible(false);
+        this.hangmanPanel = add(new HangmanPanel(clientInstance, this));
+        this.hangmanPanel.setVisible(false);
         this.add(hangmanPanel);
         informationPanel = add(new InformationPanel());
         this.add(informationPanel);
@@ -38,7 +38,7 @@ public class MainPanel extends javax.swing.JPanel {
     public void showGameGui(){
         connectPanel.setVisible(false);
         hangmanPanel.setVisible(true);
-        changeInfoLabel(InfoMessage.CONNECTING);
+        changeInfoLabel(InfoMessage.FETCHING_WORD);
     }
     
     public void changeInfoLabel(String text){
@@ -72,23 +72,30 @@ public class MainPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-    void initFocus() {
+    public void initFocus() {
         ((ConnectionPanel)connectPanel).initFocus();
     }
 
-    void disconnect() {
+    public void disconnect() {
         hangmanClient.disconnect();
     }
 
-    void setLetterBG(String string, Color color) {
+    public void setLetterBG(String string, Color color) {
         ((HangmanPanel)hangmanPanel).setLetterBG(string, color);
     }
 
-    void disableGuessButton() {
+    public void disableGuessButton() {
         ((HangmanPanel)hangmanPanel).disableGuessButton();
     }
 
-    void removeLetterListeners() {
+    public void removeLetterListeners() {
         ((HangmanPanel)hangmanPanel).removeLetterListeners();
+    }
+
+    public void newGame() {
+        hangmanClient.newGame();
+        hangmanPanel.setVisible(false);
+        hangmanPanel = add(new HangmanPanel(hangmanClient, this),0);
+        hangmanPanel.setVisible(true);
     }
 }

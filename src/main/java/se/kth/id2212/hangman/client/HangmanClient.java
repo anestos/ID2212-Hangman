@@ -106,6 +106,7 @@ public class HangmanClient extends JPanel {
                     //game won
                     spaced = ((String)json.get("word")).replace("", " ").trim(); 
                     mainPanel.changeWordHint("Word: " + spaced);
+                    mainPanel.removeLetterListeners();
                     break;
                 case CommunicationStatus.GAME_LOST:
                     mainPanel.changeInfoLabel(InfoMessage.GAME_LOST);
@@ -142,5 +143,10 @@ public class HangmanClient extends JPanel {
                     mainPanel.changeInfoLabel(InfoMessage.UNKNOWN_MSG);
 
         }
+    }
+
+    public void newGame() {
+        Request req = new Request();
+        connection.sendToServer(req.getJson().toJSONString());
     }
 }

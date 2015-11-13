@@ -9,7 +9,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -343,6 +345,11 @@ public class HangmanPanel extends javax.swing.JPanel {
         jPanel3.add(guessButton);
 
         newGameButton.setText("New Game");
+        newGameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newGameButtonActionPerformed(evt);
+            }
+        });
         jPanel6.add(newGameButton);
 
         exitButton.setText("Exit");
@@ -384,9 +391,10 @@ public class HangmanPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_exitButtonActionPerformed
 
     private void guessButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guessButtonActionPerformed
-
-        logger.info("Guessing word: " + wordGuessTextField.getText());
-        hangmanClient.takeAGuess(wordGuessTextField.getText());
+        if (wordGuessTextField.getText().length() > 0) {
+            logger.info("Guessing word: " + wordGuessTextField.getText());
+            hangmanClient.takeAGuess(wordGuessTextField.getText());
+        }
     }//GEN-LAST:event_guessButtonActionPerformed
 
     private void wordGuessTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_wordGuessTextFieldFocusGained
@@ -394,6 +402,9 @@ public class HangmanPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_wordGuessTextFieldFocusGained
 
+    private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameButtonActionPerformed
+        mainPanel.newGame();
+    }//GEN-LAST:event_newGameButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton exitButton;
@@ -492,14 +503,20 @@ public class HangmanPanel extends javax.swing.JPanel {
     }
 
     public void removeLetterListeners() {
-        for (Component c : lettersFirstRow.getComponents()) {
+        removeFromComp(lettersFirstRow);
+        removeFromComp(lettersSecondRow);
+        
+    }
+    
+    public void removeFromComp(JPanel comp){
+        for (Component c : comp.getComponents()) {
             if (c instanceof JLabel) {
-//                ((JLabel) c).removeMouseListener();
-            }
-        }
-        for (Component c : lettersSecondRow.getComponents()) {
-            if (c instanceof JLabel) {
-//                ((JLabel) c).addMouseListener();
+                MouseListener[] ar = ((JLabel) c).getMouseListeners();
+                if (ar.length > 0) {
+                    MouseListener mlist = ((JLabel) c).getMouseListeners()[0];
+                    ((JLabel) c).removeMouseListener(mlist);
+                    ((JLabel) c).setCursor(null);
+                }
             }
         }
     }

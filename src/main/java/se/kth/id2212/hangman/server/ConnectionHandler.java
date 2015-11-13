@@ -21,8 +21,8 @@ public class ConnectionHandler implements Runnable {
     private static final int DELAY_TO_MILLISECS = 3000;
     private final Socket clientSocket;
     private Boolean threadAlive = true;
-    private final String word;
-    private Integer availableTries;
+    private String word;
+    private final Integer availableTries;
     private Integer myTries;
     private List<String> pastTries = new ArrayList<>();
     /**
@@ -32,15 +32,22 @@ public class ConnectionHandler implements Runnable {
      */
     ConnectionHandler(Socket clientSocket, Integer availableTries) {
         this.clientSocket = clientSocket;
-        this.word = Dictionary.getInstance().randomWord();
+        this.word = "";
         this.availableTries = availableTries;
         this.myTries = availableTries;
-        logger.info("Starting Game. Word:" + this.word);
         
     }
     public void close(){
         logger.info("Closing connection");
         threadAlive = false;
+    }
+    
+    public void resetGame(){
+        myTries = availableTries;
+        pastTries = new ArrayList<>();
+        word = Dictionary.getInstance().randomWord();
+        logger.info("Starting Game. Word:" + word);
+
     }
     /**
      * Reads a string from the client, sleeps the specified time and
@@ -67,7 +74,7 @@ public class ConnectionHandler implements Runnable {
                     }
                 }
                 
-                Thread.sleep(DELAY_TO_MILLISECS);
+//                Thread.sleep(DELAY_TO_MILLISECS);
                 String input = new String(Arrays.copyOfRange(msg, 0, bytesRead));
                 logger.info("received"+input);
                 HangmanJsonParser parser = new HangmanJsonParser(input);
@@ -78,6 +85,11 @@ public class ConnectionHandler implements Runnable {
                 
                 ClientReply resp = new ClientReply(req, pastTries);
                 myTries = req.getTries();
+                if (resp.shouldReset()){
+                    resetGame();
+                    resp.setWord(word);
+                    resp.setTries(myTries);
+                }
                 
                 logger.info("input: "+ parser.getJson().toJSONString());
                 out.write(resp.getJson().toJSONString().getBytes());

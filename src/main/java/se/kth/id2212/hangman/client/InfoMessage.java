@@ -12,6 +12,7 @@ package se.kth.id2212.hangman.client;
 public class InfoMessage {
     public static final String NOT_CONNECTED = "Server unavailable";
     public static final String CONNECTING = "Trying to connect, please wait";
+    public static final String FETCHING_WORD = "Fetching Word";
     public static final String UNKNOWN_HOST = "Cannot find host: ";
     public static final String NO_IO_CONNECTION = "Cannot connect to: ";
     public static final String DISCONNECTED_FROM = "Disconnected from: ";
