@@ -5,7 +5,6 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,20 +82,8 @@ public class ServerConnection implements Runnable {
     }
 
     public void disconnect() {
-        try {
-            if (in != null) {
-                in.close();
-            }
-            if (out != null) {
-                out.close();
-            }
-            if (clientSocket != null) {
-                clientSocket.close();
-            }
-        } catch (IOException ex) {
-            mainPanel.changeInfoLabel(InfoMessage.DISCONNECTED_FROM + host);
-            logger.info(InfoMessage.DISCONNECTED_FROM + host);
-        }
+        Request req = new Request(1);
+        sendToServer(req.getJson().toJSONString());
     }
 
     public Socket getSocket() {
@@ -112,43 +99,12 @@ public class ServerConnection implements Runnable {
     }
 
     /**
-     * Used to submit a string for reversal.
      *
-     * @param text The string to reverse.
+     * @param text The json string to send to the server.
      */
     public void sendToServer(String text) {
-        strings.add(text);
-        String result;
-        try {
-            byte[] toServer = strings.take().getBytes();
-            out.write(toServer, 0, toServer.length);
-            out.flush();
-            byte[] msg = new byte[4096];
-                int bytesRead = 0;
-                int n;
-                while ((n = in.read(msg, bytesRead, 256)) != -1) {
-                    bytesRead += n;
-                    if (bytesRead == 4096) {
-                        break;
-                    }
-                    if (in.available() == 0) {
-                        break;
-                    }
-                }
-            String input = new String(Arrays.copyOfRange(msg, 0, bytesRead));
-            result = input;
-//            byte[] fromServer = new byte[toServer.length];
-//            int n = in.read(fromServer, 0, fromServer.length);
-//            if (n != fromServer.length) {
-//                result = "Failed to reverse, some data was lost.";
-//            } else {
-//                result = new String(fromServer);
-//            }
-        } catch (InterruptedException | IOException e) {
-            result = InfoMessage.FAILED_TO_SEND_MSG + e.getMessage();
-            logger.info(result);
-        }
-        gui.showResult(result);
+       ConnectionWorker worker = new ConnectionWorker(text, in, out, gui);
+       worker.execute();
     }
 
     /**

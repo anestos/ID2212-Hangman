@@ -25,6 +25,7 @@ public class ConnectionHandler implements Runnable {
     private final Integer availableTries;
     private Integer myTries;
     private List<String> pastTries = new ArrayList<>();
+    private final PlayerScore playerScore;
     /**
      * Creates anew instance.
      *
@@ -35,6 +36,7 @@ public class ConnectionHandler implements Runnable {
         this.word = "";
         this.availableTries = availableTries;
         this.myTries = availableTries;
+        this.playerScore = new PlayerScore();
         
     }
     public void close(){
@@ -82,8 +84,8 @@ public class ConnectionHandler implements Runnable {
                 if (req.isLetterGuess()){
                     pastTries.add(req.getLetter());
                 }
-                
-                ClientReply resp = new ClientReply(req, pastTries);
+
+                ClientReply resp = new ClientReply(req, pastTries, playerScore);
                 myTries = req.getTries();
                 if (resp.shouldReset()){
                     resetGame();
@@ -95,9 +97,10 @@ public class ConnectionHandler implements Runnable {
                 out.write(resp.getJson().toJSONString().getBytes());
                 logger.info("output: "+ resp.getJson().toJSONString());
                 out.flush();
-                if (msg[0]==13){
-                    close();
-                }
+                
+                logger.info(playerScore.getScore());
+                
+                threadAlive = resp.getKeepAlive();
             }
             clientSocket.close();
             logger.info("Connection lost");

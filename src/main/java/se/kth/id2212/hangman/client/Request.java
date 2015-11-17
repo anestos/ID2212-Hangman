@@ -27,6 +27,11 @@ public class Request {
             this.json.put("letter", toSend);
         }
     }
+    
+     public Request(Integer i) {
+        this.json = new JSONObject();
+        this.json.put("status", CommunicationStatus.END_GAME);
+     }
 
     public Request() {
         this.json = new JSONObject();

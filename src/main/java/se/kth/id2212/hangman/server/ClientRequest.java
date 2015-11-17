@@ -33,7 +33,7 @@ public class ClientRequest {
     }
     
     public Boolean hasTries(){
-        return myTries > 0;
+        return myTries > 1;
     }
     
     public Integer getTries(){
@@ -66,7 +66,7 @@ public class ClientRequest {
     }
     
     public boolean isLetterGuess(){
-        return letter != null;
+        return letter != null && !letter.equals("");
     }
 
     void setTries(int i) {

@@ -5,6 +5,7 @@ package se.kth.id2212.hangman.client;
 import se.kth.id2212.hangman.client.connection.ServerConnection;
 import javax.swing.*;
 import java.awt.*;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +77,6 @@ public class HangmanClient extends JPanel {
      */
     public void showResult(final String result) {
         SwingUtilities.invokeLater(() -> {
-            logger.info("server replied: "+result);
             HangmanJsonParser parser = new HangmanJsonParser(result);
             handleResult(parser.getJson());
         });
@@ -98,6 +98,7 @@ public class HangmanClient extends JPanel {
 
     private void handleResult(JSONObject json) { 
         String spaced;
+        JSONArray scores;
         switch ((String)json.get("status")){
 
                 case CommunicationStatus.GAME_WON:
@@ -106,7 +107,10 @@ public class HangmanClient extends JPanel {
                     //game won
                     spaced = ((String)json.get("word")).replace("", " ").trim(); 
                     mainPanel.changeWordHint("Word: " + spaced);
+                    mainPanel.setLetterBG(((String)json.get("letter")), Color.green);
                     mainPanel.removeLetterListeners();
+                    scores = (JSONArray)json.get("score");                    
+                    mainPanel.setScore("Total Score: " + scores.get(0) + "  Won: " + scores.get(1) + "  Lost: "  + scores.get(2));                    
                     break;
                 case CommunicationStatus.GAME_LOST:
                     mainPanel.changeInfoLabel(InfoMessage.GAME_LOST);
@@ -114,7 +118,10 @@ public class HangmanClient extends JPanel {
                     spaced = ((String)json.get("word")).replace("", " ").trim(); 
                     mainPanel.changeWordHint("Word: " + spaced);
                     mainPanel.disableGuessButton();
+                    mainPanel.setLetterBG(((String)json.get("letter")), Color.red);
                     mainPanel.removeLetterListeners();
+                    scores = (JSONArray)json.get("score");                    
+                    mainPanel.setScore("Total Score: " + scores.get(0) + "  Won: " + scores.get(1) + "  Lost: "  + scores.get(2));                    
                     break;
                 case CommunicationStatus.WRONG_LETTER:
                     mainPanel.changeInfoLabel(InfoMessage.GUESS_WRONG+InfoMessage.NUMBER_OF_LIFES+json.get("tries"));
@@ -136,6 +143,13 @@ public class HangmanClient extends JPanel {
                     mainPanel.changeInfoLabel(InfoMessage.GAME_STARTED+InfoMessage.NUMBER_OF_LIFES+json.get("tries"));
                     spaced = ((String)json.get("word")).replace("", " ").trim();
                     mainPanel.changeWordHint("Hint: "+ spaced);
+                    scores = (JSONArray)json.get("score");
+                    mainPanel.setScore("Total Score: " + scores.get(0) + "  Won: " + scores.get(1) + "  Lost: "  + scores.get(2));                    
+                    
+                    break;
+                case CommunicationStatus.END_GAME:
+                    logger.info("Exiting game.");
+                    System.exit(0);
                     break;
                 case CommunicationStatus.UNKNOWN:
                 default:

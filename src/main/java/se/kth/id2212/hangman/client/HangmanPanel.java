@@ -86,6 +86,8 @@ public class HangmanPanel extends javax.swing.JPanel {
         jPanel6 = new javax.swing.JPanel();
         newGameButton = new javax.swing.JButton();
         exitButton = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        scoreLabel = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(400, 300));
 
@@ -361,6 +363,10 @@ public class HangmanPanel extends javax.swing.JPanel {
         });
         jPanel6.add(exitButton);
 
+        scoreLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        scoreLabel.setPreferredSize(new java.awt.Dimension(400, 30));
+        jPanel2.add(scoreLabel);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -369,6 +375,9 @@ public class HangmanPanel extends javax.swing.JPanel {
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -380,14 +389,14 @@ public class HangmanPanel extends javax.swing.JPanel {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(96, 96, 96))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(69, 69, 69))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
-        // TODO add your handling code here:
         mainPanel.disconnect();
-        System.exit(0);
     }//GEN-LAST:event_exitButtonActionPerformed
 
     private void guessButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guessButtonActionPerformed
@@ -410,6 +419,7 @@ public class HangmanPanel extends javax.swing.JPanel {
     private javax.swing.JButton exitButton;
     private javax.swing.JButton guessButton;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
@@ -442,6 +452,7 @@ public class HangmanPanel extends javax.swing.JPanel {
     private javax.swing.JPanel lettersFirstRow;
     private javax.swing.JPanel lettersSecondRow;
     private javax.swing.JButton newGameButton;
+    private javax.swing.JLabel scoreLabel;
     private javax.swing.JTextField wordGuessTextField;
     private javax.swing.JLabel wordLabel;
     // End of variables declaration//GEN-END:variables
@@ -457,7 +468,7 @@ public class HangmanPanel extends javax.swing.JPanel {
     private void setLabelListeners() {
         for (Component c : lettersFirstRow.getComponents()) {
             if (c instanceof JLabel) {
-                ((JLabel) c).addMouseListener(new MouseAdapter() {
+                c.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         letterLabelClicked(e);
@@ -467,7 +478,7 @@ public class HangmanPanel extends javax.swing.JPanel {
         }
         for (Component c : lettersSecondRow.getComponents()) {
             if (c instanceof JLabel) {
-                ((JLabel) c).addMouseListener(new MouseAdapter() {
+                c.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         letterLabelClicked(e);
@@ -484,15 +495,27 @@ public class HangmanPanel extends javax.swing.JPanel {
     public void setLetterBG(String string, Color color) {
         for (Component c : lettersFirstRow.getComponents()) {
             if (c instanceof JLabel) {
-                if (((JLabel) c).getText().equals(string)) {
-                    ((JLabel) c).setBackground(color);
+                if (((JLabel) c).getText().equals(string.toUpperCase())) {
+                    c.setBackground(color);
+                    MouseListener[] ar = c.getMouseListeners();
+                    if (ar.length > 0) {
+                        MouseListener mlist = ((JLabel) c).getMouseListeners()[0];
+                        c.removeMouseListener(mlist);
+                        c.setCursor(null);
+                    }
                 }
             }
         }
         for (Component c : lettersSecondRow.getComponents()) {
             if (c instanceof JLabel) {
-                if (((JLabel) c).getText().equals(string)) {
-                    ((JLabel) c).setBackground(color);
+                if (((JLabel) c).getText().equals(string.toUpperCase())) {
+                    c.setBackground(color);
+                    MouseListener[] ar = c.getMouseListeners();
+                    if (ar.length > 0) {
+                        MouseListener mlist = ((JLabel) c).getMouseListeners()[0];
+                        c.removeMouseListener(mlist);
+                        c.setCursor(null);
+                    }
                 }
             }
         }
@@ -511,13 +534,17 @@ public class HangmanPanel extends javax.swing.JPanel {
     public void removeFromComp(JPanel comp){
         for (Component c : comp.getComponents()) {
             if (c instanceof JLabel) {
-                MouseListener[] ar = ((JLabel) c).getMouseListeners();
+                MouseListener[] ar = c.getMouseListeners();
                 if (ar.length > 0) {
                     MouseListener mlist = ((JLabel) c).getMouseListeners()[0];
-                    ((JLabel) c).removeMouseListener(mlist);
-                    ((JLabel) c).setCursor(null);
+                    c.removeMouseListener(mlist);
+                    c.setCursor(null);
                 }
             }
         }
+    }
+
+    public void setScore(String text) {
+        scoreLabel.setText(text);
     }
 }

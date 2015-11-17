@@ -42,7 +42,6 @@ public class HangmanServer {
             serverSocket.close();
         } catch (IOException e) {
             logger.info("Could not listen on port: " + PORT);
-//            System.exit(1);
         } finally {
             try {
                 if (serverSocket!=null){

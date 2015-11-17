@@ -98,4 +98,8 @@ public class MainPanel extends javax.swing.JPanel {
         hangmanPanel = add(new HangmanPanel(hangmanClient, this),0);
         hangmanPanel.setVisible(true);
     }
+
+    public void setScore(String text) {
+        ((HangmanPanel)hangmanPanel).setScore(text);
+    }
 }
